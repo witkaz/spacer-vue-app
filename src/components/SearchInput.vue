@@ -1,6 +1,6 @@
  <template>
   <div class="searchWrapper">
-    <input id="search" name="search" :value="value" @input="handleChange">
+    <input id="search" name="search" :value="value" @input="handleChange" :class="{ dark: dark }" />
   </div>
 </template>
 
@@ -11,6 +11,10 @@ export default {
     value: {
       type: String,
       required: true,
+    },
+    dark: {
+      type: Boolean,
+      default: false,
     },
   },
   methods: {
@@ -26,7 +30,7 @@ export default {
     width: 250px;
     display: flex;
     flex-direction: column;
-    margin-top: 50px;
+    margin: 50px;
     input {
       color: #fff;
       text-align: center;
@@ -46,6 +50,16 @@ export default {
     input:focus {
       outline: none;
       box-shadow: 0 10px 20px -8px rgba(255,255,255, .5);
+    }
+
+    .dark {
+      color: #1e3d4a;
+      border-bottom-color: #1e3d4a;
+    }
+
+    .dark:focus {
+      outline: none;
+      box-shadow: 0 10px 20px -8px rgba(#1e3d4a, .5);
     }
   }
 </style>
