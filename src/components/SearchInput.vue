@@ -1,6 +1,10 @@
  <template>
   <div class="searchWrapper">
-    <input id="search" name="search" :value="value" @input="handleChange" :class="{ dark: dark }" />
+    <input id="search" name="search"
+      :value="value"
+      @input="handleChange"
+      :class="{ dark: dark }"
+    >
   </div>
 </template>
 

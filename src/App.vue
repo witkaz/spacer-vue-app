@@ -8,10 +8,23 @@
        <HeroImage v-if="step === 0"/>
     </transition>
     <Claim v-if="step === 0"/>
-    <SearchInput v-model="searchValue" @input="handleInput" :dark="step === 1"/>
+    <SearchInput
+      v-model="searchValue"
+      @input="handleInput"
+      :dark="step === 1"
+    />
     <div class="results" v-if="results && !loading && step === 1">
-      <ResultsItem v-for="item in results" :item="item" :key="item.data[0].nasa_id" />
+      <!-- @click.native, poniewaz odwoluje sie do konkretnego elementu,
+      sam komponentu nie emituje nic, gdyby emitował to byłoby po prostu @click-->
+      <ResultsItem
+        v-for="item in results"
+        :item="item"
+        :key="item.data[0].nasa_id"
+        @click.native="handleModalOpen(item)"
+      />
     </div>
+    <div class="loader" v-if="step === 1 && loading"></div>
+    <Modal v-if="modalOpen" :item="modalItem" @closeModal="modalOpen = false" />
   </div>
 </template>
 <script>
@@ -21,6 +34,7 @@ import Claim from '@/components/Claim.vue';
 import SearchInput from '@/components/SearchInput.vue';
 import HeroImage from '@/components/HeroImage.vue';
 import ResultsItem from '@/components/ResultsItem.vue';
+import Modal from '@/components/Modal.vue';
 
 const API = 'https://images-api.nasa.gov/search';
 
@@ -28,9 +42,10 @@ export default {
   name: 'Search',
   components: {
     Claim,
-    ResultsItem,
     SearchInput,
     HeroImage,
+    ResultsItem,
+    Modal,
   },
   data() {
     return {
@@ -38,9 +53,15 @@ export default {
       step: 0,
       searchValue: '',
       results: [],
+      modalOpen: false,
+      modalItem: null,
     };
   },
   methods: {
+    handleModalOpen(item) {
+      this.modalOpen = true;
+      this.modalItem = item;
+    },
     handleInput: debounce(function search() {
       this.loading = true;
       console.log(this.searchValue);
@@ -117,4 +138,33 @@ export default {
   .slide-enter, .slide-leave-to {
     margin-top: -50px;
   }
+
+// LOADER
+.loader {
+  margin-top: 100px;
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+}
+.loader:after {
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid #1e3d4a;
+  border-color: #1e3d4a transparent #1e3d4a transparent;
+  animation: loading 1.2s linear infinite;
+}
+
+@keyframes loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 </style>
